@@ -1,5 +1,74 @@
+from numpy.core.defchararray import center
 from manimlib.imports import *
 import numpy as np
+
+class TrigonometricFunOfSpecial(GraphScene):
+    CONFIG={
+        "graph_origin":np.array([0,0,0]),
+        "x_min": -2,
+        "x_max": 2,
+        "x_axis_width": 12,
+        "y_min": -1,
+        "y_max": 1,
+        "y_axis_height": 6,
+    }
+    def construct(self):
+        self.setup_axes(animate=True)
+        self.play(ShowCreation(Circle(radius=3)))
+        self.play(ShowCreation(Line(start=np.array([0,0,0]),end=np.array([3,0,0])).rotate_about_origin(15*PI/180)))
+        self.play(ShowCreation(Arc(radius=0.7,angle=15*PI/180)))
+        text_15=TextMobject("$15^o$").scale(0.5).shift(np.array([1,0.1,0]))
+        self.play(ShowCreation(text_15))
+        self.play(ShowCreation(Polygon(np.array([0,0,0]),np.array([(np.sqrt(6)+np.sqrt(2))*0.75,0,0]),np.array([(np.sqrt(6)+np.sqrt(2))*0.75,(np.sqrt(6)+np.sqrt(2))*0.75,0]))))
+        text45=TextMobject("$45^o$").scale(0.5).set_color(BLUE).shift(np.array([2.7,2.5,0]))
+        self.add(VGroup(Square(side_length=0.2).set_color(BLUE).shift(np.array([(np.sqrt(6)+np.sqrt(2))*0.75-0.1,0.1,0])),TextMobject("$90^o$").scale(0.5).set_color(BLUE).shift(np.array([2.5,0.1,0])),text45,Arc(radius=0.2,arc_center=np.array([(np.sqrt(6)+np.sqrt(2))*0.75,(np.sqrt(6)+np.sqrt(2))*0.75,0]),start_angle=225*DEGREES,angle=45*DEGREES).set_color(BLUE)))
+        # graph = self.get_graph(self.x_2,color = GREEN,x_min = 2,x_max = 4)
+        # self.play(ShowCreation(graph),run_time = 2)
+        self.play(ShowCreation(Line(start=np.array([(np.sqrt(6)+np.sqrt(2))*0.75,(np.sqrt(6)-np.sqrt(2))*0.75,0]),end=np.array([np.sqrt(6)*0.75,np.sqrt(6)*0.75,0]))))
+        text30=TextMobject("$30^o$").scale(0.5).shift(np.array([0.7,0.35,0]))
+        self.add(VGroup(Square(side_length=0.2).rotate(45*DEGREES).shift(np.array([np.sqrt(6)*0.75,np.sqrt(6)*0.75-0.1*np.sqrt(2),0])),Arc(radius=0.5,start_angle=15*DEGREES,angle=30*DEGREES),TextMobject("$90^o$").scale(0.5).shift(np.array([1.9,1.4,0])),text30))
+        self.wait()
+        text1=TextMobject("1").shift(np.array([2,0.5,0]))
+        self.play(FadeInFromLarge(text1))
+        text_1_2=TextMobject("$\\frac{1}{2}$").shift(np.array([2.3,1.5,0]))
+        text_3_2=TextMobject("$\\frac{\\sqrt{3}}{2}$").shift(np.array([0.8,1.3,0]))
+        self.play(Transform(VGroup(text30.copy(),text1.copy()),VGroup(text_1_2,text_3_2) ))
+        self.wait()
+        text_1_2_up=TextMobject("$\\frac{1}{2}$").shift(np.array([2.3,2.9,0]))
+        self.play(Transform(VGroup(text_1_2.copy(),text45.copy()),text_1_2_up))
+        self.wait()
+        text_down=TextMobject("$\\frac{\\sqrt{6}+\\sqrt{2}}{2}$").shift(np.array([1.5,-0.5,0]))
+        text_right=TextMobject("$\\frac{\\sqrt{6}+\\sqrt{2}}{2}$").shift(np.array([4,1.5,0]))
+        self.play(Transform(VGroup(text_1_2_up.copy(),text_3_2.copy(),text45.copy()),VGroup(text_down,text_right)))
+        self.wait()
+        line_up=Line(
+            start=np.array([(np.sqrt(6)+np.sqrt(2))*0.75,(np.sqrt(6)+np.sqrt(2))*0.75,0]),
+            end=np.array([(np.sqrt(6)+np.sqrt(2))*0.75,(np.sqrt(6)-np.sqrt(2))*0.75,0])
+            ).set_color(YELLOW)
+        v_up=VGroup(
+            TextMobject("$\\frac{\\sqrt{2}}{2}$").set_color(YELLOW).next_to(line_up,buff=0),
+            line_up
+        )
+        self.play(Transform(VGroup(text_1_2_up.copy(),text45.copy()),v_up))
+        line_down=Line(
+            start=np.array([(np.sqrt(6)+np.sqrt(2))*0.75,(np.sqrt(6)-np.sqrt(2))*0.75,0]),
+            end=np.array([(np.sqrt(6)+np.sqrt(2))*0.75,0,0])
+        ).set_color(PINK)
+        text_p1=TextMobject("$\\frac{\\sqrt{6}+\\sqrt{2}}{2}-\\frac{\\sqrt{2}}{2}$").set_color(PINK).shift(np.array([4.5,0.5,0]))
+        text_p2=TextMobject("$\\frac{\\sqrt{6}-\\sqrt{2}}{2}$").set_color(PINK).shift(np.array([3.7,0.5,0]))
+        self.play(ShowCreation(line_down))
+        self.play(FadeInFromLarge(text_p1))
+        self.wait()
+        self.play(Transform(text_p1,text_p2))
+        text_cos=TextMobject("$\\cos15^o=\\sin75^o=\\frac{\\sqrt{6}+\\sqrt{2}}{2}$").shift(np.array([-3,1,0]))
+        text_sin=TextMobject("$\\sin15^o=\\cos75^o=\\frac{\\sqrt{6}-\\sqrt{2}}{2}$").shift(np.array([-3,-1,0]))
+        self.wait()
+        self.play(Transform(VGroup(text_15.copy(),text_down.copy()),text_cos))
+        self.wait()
+        self.play(Transform(VGroup(text_15.copy(),text_p2.copy()),text_sin))
+        self.wait()
+
+
 class SquareDifference(Scene):
     def construct(self):
         def AddSide(DoubleArrow):
