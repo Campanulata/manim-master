@@ -48,6 +48,7 @@ class Text(SVGMobject):
         't2s': {},
         't2w': {},
         'tab_width': 4,
+        'font': 'STHeiti'
     }
 
     def __init__(self, text, **config):
