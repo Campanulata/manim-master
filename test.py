@@ -1,7 +1,150 @@
 from numpy.core.defchararray import center
 from manimlib.imports import *
 import numpy as np
+import random
 
+class BrownianMovement(Scene):
+    def construct(self):
+        points=[np.array([0,0,0])]
+        v=VGroup()
+        for i in range(100):
+            x=random.uniform(0,1)
+            y=np.sqrt(1-x**2)
+            t=random.random()
+            if t>0.5:
+                x=x
+                t=random.random()
+                if t>0.5:
+                    y=y
+                else:
+                    y=-y
+            else:
+                x=-x
+                t=random.random()
+                if t>0.5:
+                    y=y
+                else:
+                    y=-y
+            d=np.array([x/2,y/2,0])
+            points.append(d+points[i])
+            line=Line(start=points[i],end=points[i+1]).set_color(RED)
+            v.add(line)
+            self.play(ShowCreation(line),run_time=0.1)
+        v_c=v.copy().scale(0.5).move_to(LEFT*5+UP*2)
+        self.play(Transform(v,v_c))
+        #
+        points=[np.array([0,0,0])]
+        v=VGroup()
+        for i in range(100):
+            x=random.uniform(0,1)
+            y=np.sqrt(1-x**2)
+            t=random.random()
+            if t>0.5:
+                x=x
+                t=random.random()
+                if t>0.5:
+                    y=y
+                else:
+                    y=-y
+            else:
+                x=-x
+                t=random.random()
+                if t>0.5:
+                    y=y
+                else:
+                    y=-y
+            d=np.array([x/2,y/2,0])
+            points.append(d+points[i])
+            line=Line(start=points[i],end=points[i+1]).set_color(YELLOW)
+            v.add(line)
+            self.play(ShowCreation(line),run_time=0.1)
+        v_c=v.copy().scale(0.5).move_to(LEFT*5)
+        self.play(Transform(v,v_c))
+        #
+        points=[np.array([0,0,0])]
+        v=VGroup()
+        for i in range(100):
+            x=random.uniform(0,1)
+            y=np.sqrt(1-x**2)
+            t=random.random()
+            if t>0.5:
+                x=x
+                t=random.random()
+                if t>0.5:
+                    y=y
+                else:
+                    y=-y
+            else:
+                x=-x
+                t=random.random()
+                if t>0.5:
+                    y=y
+                else:
+                    y=-y
+            d=np.array([x/2,y/2,0])
+            points.append(d+points[i])
+            line=Line(start=points[i],end=points[i+1]).set_color(BLUE)
+            v.add(line)
+            self.play(ShowCreation(line),run_time=0.1)
+        v_c=v.copy().scale(0.5).move_to(LEFT*5+DOWN*2)
+        self.play(Transform(v,v_c))
+        self.play(Write(Text("布朗运动（Brownian motion）").move_to(UP)))
+        self.play(Write(Text("是微小粒子或者颗粒在流体中做的无规则运动")))
+        self.play(Write(Text("————物理选修3-3,分子动理论").move_to(DOWN+RIGHT*2)))
+
+class Time(Scene):
+    def construct(self):
+        axis_shift=-3
+        axis=NumberLine(x_min=0,x_max=6,include_tip=True,include_numbers=True,number_at_center=-axis_shift)
+        list_color=[RED,ORANGE,YELLOW,GREEN,BLUE,PINK,PURPLE]
+        self.play(ShowCreation(axis))
+        list_dot=[]
+        #时刻
+        for i in range(6):
+            color=list_color[i]
+            dot=Dot(axis.n2p(i)).set_color(color)
+            list_dot.append(dot.copy())
+            arrow=Arrow().rotate(90*DEGREES).shift(np.array([i+axis_shift,0.8,0])).set_color(color)
+            self.play(ShowCreation(VGroup(dot,arrow)))
+            t_1=Text("第"+str(i)+"秒末").next_to(arrow,UP).set_color(color).scale(0.5)
+            t_2=Text("第"+str(i+1)+"秒初").next_to(t_1,UP).set_color(color).scale(0.5)
+            self.play(ShowCreation(VGroup(t_1,t_2)))
+            #self.play(ShowCreation(t_2))
+        list_line=[]
+        #时间
+        for i in range(5):
+            color=list_color[i]
+            line=Line(start=np.array([i+axis_shift,0,0]),end=np.array([i+1+axis_shift,0,0])).set_color(color)
+            list_line.append(line.copy())
+            self.play(ShowCreation(line))
+            t_1=Text("第\n"+str(i+1)+"\n"+"秒\n"+"内").set_color(color).next_to(line, DOWN).scale(0.7)
+            self.play(Transform(line.copy(),t_1))
+        self.wait()
+        t_up=Text("时刻").move_to(UP*3.5)
+        circle=Circle(fill_color=WHITE,fill_opacity=1).scale(0.3).next_to(t_up,LEFT).set_color(WHITE)
+        self.play(Transform(
+            VGroup(list_dot[0],list_dot[1],list_dot[2],list_dot[3],list_dot[4],list_dot[5]),
+            VGroup(t_up,circle)))
+        t_down=Text("时间").move_to(DOWN*3.5)
+        line=Line(stroke_width=30).next_to(t_down,LEFT)
+        self.wait()
+        self.play(Transform(
+            VGroup(list_line[0],list_line[1],list_line[2],list_line[3],list_line[4]).copy(),
+            VGroup(t_down,line)
+        ))
+        self.wait()
+        #前i秒
+        line3=VGroup(list_line[0],list_line[1],list_line[2])
+        line5=VGroup(list_line[0],list_line[1],list_line[2],list_line[3],list_line[4])
+        t_pre3=Text("前3秒").shift(np.array([-5,-1,0]))
+        t_line3=line3.copy().scale(0.5).next_to(t_pre3,DOWN)
+        self.play(Transform(line3.copy(),VGroup(t_pre3,t_line3)))
+        self.wait()
+        #
+        t_pre5=Text("前5秒").next_to(t_line3,DOWN)
+        t_line5=line5.copy().scale(0.5).next_to(t_pre5,DOWN)
+        self.play(Transform(line5.copy(),VGroup(t_pre5,t_line5)))
+        self.wait(5)
 
 
 class LinearMotion(Scene):
@@ -502,3 +645,225 @@ class SquareSum(Scene):
         tex_equal_y.scale(3)
         self.play(ShowCreation(tex_equal_y))
         self.play(Transform(tex_equal_y,tex_equal.set_color(YELLOW)))
+
+# By Wei 2020/6/13
+
+class Euler(Scene):
+    def construct(self):
+        formula1 = TexMobject('sinx = ',
+        'x',
+        '-',
+        '\\frac{x^3}{3!}',
+        '+',
+        '\\frac{x^5}{5!}',
+        '-',
+        '\\frac{x^7}{7!}',
+        '+',
+        '\\frac{x^9}{9!}',
+        '-...')
+
+        formula2 = TexMobject('cosx =',
+        '1',
+        '-',
+        '\\frac{x^2}{2!}',
+        '+',
+        '\\frac{x^4}{4!}',
+        '-',
+        '\\frac{x^6}{6!}',
+        '+',
+        '\\frac{x^8}{8!}',
+        '-...')
+        
+        self.play(Write(formula1), run_time = 5)
+        formula2.move_to(1.4*DOWN)
+        #self.play(Write(formula2[0:1]))
+        for i in range(11):
+            self.play(ReplacementTransform(formula1[i].copy(), formula2[i]), run_time = 0.8)
+
+        formula1_1 = TexMobject('sinx = '
+        'x',
+        '-',
+        '\\frac{x^3}{3!}',
+        '+',
+        '\\frac{x^5}{5!}',
+        '-',
+        '\\frac{x^7}{7!}',
+        '+',
+        '\\frac{x^9}{9!}',
+        '-...')
+
+        formula2_1 = TexMobject('cosx = '
+        '1',
+        '-',
+        '\\frac{x^2}{2!}',
+        '+',
+        '\\frac{x^4}{4!}',
+        '-',
+        '\\frac{x^6}{6!}',
+        '+',
+        '\\frac{x^8}{8!}',
+        '-...')
+
+        formula1_1.to_corner(UP + LEFT)
+        formula2_1.to_corner(4*UP + LEFT)
+        self.play(Transform(formula1,formula1_1), run_time = 2)
+        self.play(Transform(formula2,formula2_1), run_time = 2)
+        self.wait()
+
+        formula3 = TexMobject('e^x = ',
+        '1','+','x','+',
+        '\\frac{x^2}{2!}','+','\\frac{x^3}{3!}','+',
+        '\\frac{x^4}{4!}','+','\\frac{x^5}{5!}','+',
+        '\\frac{x^6}{6!}','+','\\frac{x^7}{7!}','+...')
+        formula3.to_corner(7*UP + LEFT)
+        self.play(Write(formula3), run_time = 5)
+        self.wait()
+
+        formula4 = TexMobject('e^{i\\theta} = ',
+        '1','+','i\\theta','+',
+        '\\frac{(i\\theta)^2}{2!}','+','\\frac{(i\\theta)^3}{3!}','+',
+        '\\frac{(i\\theta)^4}{4!}','+','\\frac{(i\\theta)^5}{5!}','+',
+        '\\frac{(i\\theta)^6}{6!}','+','\\frac{(i\\theta)^7}{7!}','+...')
+        formula4.to_corner(10*UP + LEFT)
+        #self.play(Write(formula4), run_time = 5)
+        for i in range(17):
+            self.play(ReplacementTransform(formula3[i].copy(), formula4[i]), run_time = 0.8)
+        self.wait(2)
+        
+        formula5 = TexMobject('e^{i\\theta} = ',
+        '1','+','i\\theta','-',
+        '\\frac{\\theta^2}{2!}','-','\\frac{i\\theta^3}{3!}','+',
+        '\\frac{\\theta^4}{4!}','+','\\frac{i\\theta^5}{5!}','-',
+        '\\frac{\\theta^6}{6!}','-','\\frac{i\\theta^7}{7!}','+...')
+        formula5.to_corner(10*UP + LEFT)
+        self.play(ReplacementTransform(formula4,formula5), run_time = 3)
+        self.wait(2)
+
+        self.play(FadeOut(formula3))
+        formula5_1 = TexMobject('e^{i\\theta} = ',
+        '1','+',
+        'i\\theta',
+        '-\\frac{\\theta^2}{2!}',
+        '-\\frac{i\\theta^3}{3!}',
+        '+\\frac{\\theta^4}{4!}',
+        '+\\frac{i\\theta^5}{5!}',
+        '-\\frac{\\theta^6}{6!}',
+        '-\\frac{i\\theta^7}{7!}',
+        '+...')
+        formula5_1.to_corner(7*UP + LEFT)
+        formula5_1.shift(1*LEFT)
+        formula5_1.scale(0.8)
+        self.play(ReplacementTransform(formula5,formula5_1), runtime = 2)
+        self.wait()
+
+        formula6 = TexMobject('e^{i\\theta} = ',
+        '(1',
+        '-\\frac{\\theta^2}{2!}',
+        '+\\frac{\\theta^4}{4!}',
+        '-\\frac{\\theta^6}{6!}',
+        '+...)',
+        '+',
+        '(i\\theta',
+        '-\\frac{i\\theta^3}{3!}',
+        '+\\frac{i\\theta^5}{5!}',
+        '-\\frac{i\\theta^7}{7!}',
+        '+...)')
+        formula6.to_corner(10*UP + LEFT)
+        formula6.shift(1.2*LEFT)
+        formula6.scale(0.8)
+
+        self.play(ReplacementTransform(formula5_1[0].copy(), formula6[0]))
+        self.play(ReplacementTransform(formula5_1[1].copy(), formula6[1]))
+        self.play(ReplacementTransform(formula5_1[4].copy(), formula6[2])) 
+        self.play(ReplacementTransform(formula5_1[6].copy(), formula6[3])) 
+        self.play(ReplacementTransform(formula5_1[8].copy(), formula6[4])) 
+        self.play(ReplacementTransform(formula5_1[2].copy(), formula6[5]))
+
+        self.play(ReplacementTransform(formula5_1[2].copy(), formula6[6])) 
+        self.play(ReplacementTransform(formula5_1[-8].copy(), formula6[-5])) 
+        self.play(ReplacementTransform(formula5_1[-6].copy(), formula6[-4])) 
+        self.play(ReplacementTransform(formula5_1[-4].copy(), formula6[-3])) 
+        self.play(ReplacementTransform(formula5_1[-2].copy(), formula6[-2]))
+        self.play(ReplacementTransform(formula5_1[-1].copy(), formula6[-1]))
+        self.wait()
+
+        formula6_1 = TexMobject('e^{i\\theta} = ',
+        '(1-\\frac{\\theta^2}{2!}+\\frac{\\theta^4}{4!}-\\frac{\\theta^6}{6!}+...)',
+        '+i',
+        '(\\theta-\\frac{\\theta^3}{3!}+\\frac{\\theta^5}{5!}-\\frac{\\theta^7}{7!}+...)')
+        formula6_1.to_corner(10*UP + LEFT)
+        formula6_1.shift(1.2*LEFT)
+        formula6_1.scale(0.8)
+        self.play(ReplacementTransform(formula6,formula6_1), run_time = 3)
+        self.wait(2)
+
+        formula7 = TexMobject('e^i\\theta=','cos\\theta','+','i','sin\\theta')
+        formula7.shift(1.7 * LEFT,1.52 * DOWN)
+
+        self.play(ReplacementTransform(formula6_1[1],formula7[1]))
+        self.play(ReplacementTransform(formula6_1[-1],formula7[-1]))
+        self.wait()
+
+class MomentumDeltaV(GraphScene):
+    CONFIG={
+        "graph_origin":np.array([0,0,0]),
+        "x_min": -7,
+        "x_max": 7,
+        "x_axis_width": 14,
+        "x_axis_label":"$v_a^\\prime$",
+        "y_min": -4,
+        "y_max": 4,
+        "y_axis_height": 8,
+        "y_axis_label":"$v_b^\\prime$",
+    }
+    def construct(self):
+        #self.play(Write(Text("动量速度增量(MomentumDeltaV)").to_edge(DOWN)))
+        self.setup_axes(animate=True)
+        m_a_text=TextMobject("$m_a=$").to_corner(UL)
+        m_a=ValueTracker(1)
+        m_a_val=DecimalNumber(m_a.get_value()).next_to(m_a_text,RIGHT)
+        m_b_text=TextMobject("$m_b=$").next_to(m_a_text,DOWN)
+        m_b=ValueTracker(1)
+        m_b_val=DecimalNumber(m_b.get_value()).next_to(m_b_text,RIGHT)
+        v_a_text=TextMobject("$v_a=$").next_to(m_a_val,RIGHT)
+        v_a=ValueTracker(2)
+        v_a_val=DecimalNumber(v_a.get_value()).next_to(v_a_text,RIGHT)
+        v_b_text=TextMobject("$v_b=$").next_to(m_b_val,RIGHT)
+        v_b=ValueTracker(0)
+        v_b_val=DecimalNumber(v_b.get_value()).next_to(v_b_text,RIGHT)
+        self.play(Write(VGroup(m_a_text,m_a_val,v_a_text,v_a_val,m_b_text,m_b_val,v_b_text,v_b_val)))
+        #
+        m_a_val.add_updater(lambda m:m.set_value(m_a.get_value()))
+        m_b_val.add_updater(lambda m:m.set_value(m_b.get_value()))
+        v_a_val.add_updater(lambda m:m.set_value(v_a.get_value()))
+        v_b_val.add_updater(lambda m:m.set_value(v_b.get_value()))
+        #
+        #energy 
+        energy_conservation = ParametricFunction(lambda t: np.array([np.sqrt(((m_a.get_value()*v_a.get_value()**2 +m_b.get_value() *v_b.get_value()**2 ))/m_a.get_value())*np.sin(t),np.sqrt(((m_a.get_value()*v_a.get_value()**2+m_b.get_value()*v_b.get_value()**2))/m_b.get_value())*np.cos(t), 0]) ,t_min=0, t_max=TAU ,color=YELLOW) 
+        energy_conservation.add_updater(lambda m :m.become(
+            ParametricFunction(lambda t: np.array([np.sqrt(((m_a.get_value()*v_a.get_value()**2 +m_b.get_value() *v_b.get_value()**2 ))/m_a.get_value())*np.sin(t),np.sqrt(((m_a.get_value()*v_a.get_value()**2+m_b.get_value()*v_b.get_value()**2))/m_b.get_value())*np.cos(t), 0]) ,t_min=0, t_max=TAU ,color=YELLOW) 
+            ))
+        energy_tex=TextMobject("$\\frac{1}{2}mv_a^2+\\frac{1}{2}mv_b^2=\\frac{1}{2}mv_a^{\\prime}2+\\frac{1}{2}mv_b^\\prime 2$").set_color(YELLOW).move_to(UP*0.5)
+        self.play(Write(energy_tex))
+        self.play(ApplyMethod(energy_tex.scale,0.6))
+        energy_tex.add_updater(lambda m:m.next_to(energy_conservation,RIGHT+UP*0.2,buff=0))
+        self.play(ShowCreation(energy_conservation))
+        #momentum
+        momentum_conservation=self.get_graph(lambda x : -m_a.get_value()/m_b.get_value()*x+m_a.get_value()/m_b.get_value()*v_a.get_value()+v_b.get_value(),color=BLUE)
+        momentum_conservation.add_updater(lambda m:m.become(self.get_graph(lambda x : -m_a.get_value()/m_b.get_value()*x+m_a.get_value()/m_b.get_value()*v_a.get_value()+v_b.get_value(),color=BLUE)))
+        momentum_tex0=TextMobject("$m_av_a+m_bv_b=m_av_a^\\prime+m_bv_b^\\prime$").set_color(BLUE).scale(0.8).move_to(UP*0.5)
+        momentum_tex=TextMobject("$-\\frac{m_a}{m_b}v_a^\\prime+\\frac{m_a}{m_b}v_a+v_b$").set_color(BLUE).scale(0.8).move_to(UP*0.5)
+        self.play(Write(momentum_tex0))
+        self.play(ReplacementTransform(momentum_tex0,momentum_tex))
+        momentum_tex.add_updater(lambda m:m.next_to(energy_conservation,RIGHT+DOWN*0.1, buff=0))
+        self.play(ShowCreation(momentum_conservation))
+        
+        
+        self.play(m_a.increment_value,5)
+        self.play(m_a.increment_value,-5)
+        m_a.set_value(1)
+        self.wait()
+
+
+
+
