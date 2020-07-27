@@ -146,7 +146,6 @@ class Time(Scene):
         self.play(Transform(line5.copy(),VGroup(t_pre5,t_line5)))
         self.wait(5)
 
-
 class LinearMotion(Scene):
     def construct(self):
         axes_shift=np.array([-2,-2,0])
@@ -436,7 +435,6 @@ class TrigonometricFunOfSpecial(GraphScene):
         self.play(Transform(VGroup(text_15.copy(),text_p2.copy()),text_sin))
         self.wait()
 
-
 class SquareDifference(Scene):
     def construct(self):
         def AddSide(DoubleArrow):
@@ -646,8 +644,6 @@ class SquareSum(Scene):
         self.play(ShowCreation(tex_equal_y))
         self.play(Transform(tex_equal_y,tex_equal.set_color(YELLOW)))
 
-# By Wei 2020/6/13
-
 class Euler(Scene):
     def construct(self):
         formula1 = TexMobject('sinx = ',
@@ -817,19 +813,30 @@ class MomentumDeltaV(GraphScene):
         "y_axis_label":"$v_b^\\prime$",
     }
     def construct(self):
+        
+        def crm(self):
+            img=ImageMobject("crm",height=8)
+            self.play(ShowCreation(img))
+            self.play(ApplyMethod(img.move_to,RIGHT*3))
+            text=Text("动量速度增量\n(DeltaV)\n完全弹性碰撞中\n初末速度\n与\n共同速度\n的关系").move_to(LEFT*4)
+            self.play(Write(text))
+            self.wait()
+            self.play(FadeOut(img))
+            self.play(FadeOut(text))
+        #crm(self)
         #self.play(Write(Text("动量速度增量(MomentumDeltaV)").to_edge(DOWN)))
         self.setup_axes(animate=True)
         m_a_text=TextMobject("$m_a=$").to_corner(UL)
         m_a=ValueTracker(1)
         m_a_val=DecimalNumber(m_a.get_value()).next_to(m_a_text,RIGHT)
         m_b_text=TextMobject("$m_b=$").next_to(m_a_text,DOWN)
-        m_b=ValueTracker(1)
+        m_b=ValueTracker(3)
         m_b_val=DecimalNumber(m_b.get_value()).next_to(m_b_text,RIGHT)
         v_a_text=TextMobject("$v_a=$").next_to(m_a_val,RIGHT)
-        v_a=ValueTracker(2)
+        v_a=ValueTracker(4)
         v_a_val=DecimalNumber(v_a.get_value()).next_to(v_a_text,RIGHT)
         v_b_text=TextMobject("$v_b=$").next_to(m_b_val,RIGHT)
-        v_b=ValueTracker(0)
+        v_b=ValueTracker(1)
         v_b_val=DecimalNumber(v_b.get_value()).next_to(v_b_text,RIGHT)
         self.play(Write(VGroup(m_a_text,m_a_val,v_a_text,v_a_val,m_b_text,m_b_val,v_b_text,v_b_val)))
         #
@@ -837,33 +844,176 @@ class MomentumDeltaV(GraphScene):
         m_b_val.add_updater(lambda m:m.set_value(m_b.get_value()))
         v_a_val.add_updater(lambda m:m.set_value(v_a.get_value()))
         v_b_val.add_updater(lambda m:m.set_value(v_b.get_value()))
-        #
         #energy 
         energy_conservation = ParametricFunction(lambda t: np.array([np.sqrt(((m_a.get_value()*v_a.get_value()**2 +m_b.get_value() *v_b.get_value()**2 ))/m_a.get_value())*np.sin(t),np.sqrt(((m_a.get_value()*v_a.get_value()**2+m_b.get_value()*v_b.get_value()**2))/m_b.get_value())*np.cos(t), 0]) ,t_min=0, t_max=TAU ,color=YELLOW) 
         energy_conservation.add_updater(lambda m :m.become(
             ParametricFunction(lambda t: np.array([np.sqrt(((m_a.get_value()*v_a.get_value()**2 +m_b.get_value() *v_b.get_value()**2 ))/m_a.get_value())*np.sin(t),np.sqrt(((m_a.get_value()*v_a.get_value()**2+m_b.get_value()*v_b.get_value()**2))/m_b.get_value())*np.cos(t), 0]) ,t_min=0, t_max=TAU ,color=YELLOW) 
             ))
-        energy_tex=TextMobject("$\\frac{1}{2}mv_a^2+\\frac{1}{2}mv_b^2=\\frac{1}{2}mv_a^{\\prime}2+\\frac{1}{2}mv_b^\\prime 2$").set_color(YELLOW).move_to(UP*0.5)
+        energy_tex=TextMobject("$\\frac{1}{2}mv_a^2+\\frac{1}{2}mv_b^2=\\frac{1}{2}mv_a^{\\prime2}+\\frac{1}{2}mv_b^{\\prime2}$").set_color(YELLOW).move_to(UP*0.5)
         self.play(Write(energy_tex))
-        self.play(ApplyMethod(energy_tex.scale,0.6))
-        energy_tex.add_updater(lambda m:m.next_to(energy_conservation,RIGHT+UP*0.2,buff=0))
+        self.play(Transform(energy_tex,energy_tex.copy().scale(0.6).to_corner(UR)))
         self.play(ShowCreation(energy_conservation))
         #momentum
         momentum_conservation=self.get_graph(lambda x : -m_a.get_value()/m_b.get_value()*x+m_a.get_value()/m_b.get_value()*v_a.get_value()+v_b.get_value(),color=BLUE)
         momentum_conservation.add_updater(lambda m:m.become(self.get_graph(lambda x : -m_a.get_value()/m_b.get_value()*x+m_a.get_value()/m_b.get_value()*v_a.get_value()+v_b.get_value(),color=BLUE)))
         momentum_tex0=TextMobject("$m_av_a+m_bv_b=m_av_a^\\prime+m_bv_b^\\prime$").set_color(BLUE).scale(0.8).move_to(UP*0.5)
-        momentum_tex=TextMobject("$-\\frac{m_a}{m_b}v_a^\\prime+\\frac{m_a}{m_b}v_a+v_b$").set_color(BLUE).scale(0.8).move_to(UP*0.5)
+        momentum_tex=TextMobject("$v_b^\\prime=-\\frac{m_a}{m_b}v_a^\\prime+\\frac{m_a}{m_b}v_a+v_b$").set_color(BLUE).scale(0.8).move_to(UP*0.5)
         self.play(Write(momentum_tex0))
         self.play(ReplacementTransform(momentum_tex0,momentum_tex))
-        momentum_tex.add_updater(lambda m:m.next_to(energy_conservation,RIGHT+DOWN*0.1, buff=0))
+        self.play(Transform(momentum_tex,momentum_tex.copy().next_to(energy_tex,DOWN)))
         self.play(ShowCreation(momentum_conservation))
+        dot_p=Dot(np.array([v_a.get_value(),v_b.get_value(),0]),color=GREEN)
+        dot_p.add_updater(lambda m:m.become(Dot(np.array([v_a.get_value(),v_b.get_value(),0]),color=GREEN)))
+        dot_p_text=TextMobject("$P(v_a,v_b)$").next_to(dot_p,DOWN).set_color(GREEN).scale(0.7)
+        dot_p_text.add_updater(lambda m:m.become(TextMobject("$P(v_a,v_b)$").next_to(dot_p,DOWN,buff=0.1).set_color(GREEN).scale(0.7)))
+        dot_q=Dot(np.array([((m_a.get_value()-m_b.get_value())*v_a.get_value()+2*m_b.get_value()*v_b.get_value())/(m_a.get_value()+m_b.get_value()),(2*m_a.get_value()*v_a.get_value()-(m_a.get_value()-m_b.get_value())*v_b.get_value())/(m_a.get_value()+m_b.get_value()),0]),color=GREEN)
+        dot_q.add_updater(lambda m:m.become(Dot(np.array([((m_a.get_value()-m_b.get_value())*v_a.get_value()+2*m_b.get_value()*v_b.get_value())/(m_a.get_value()+m_b.get_value()),(2*m_a.get_value()*v_a.get_value()-(m_a.get_value()-m_b.get_value())*v_b.get_value())/(m_a.get_value()+m_b.get_value()),0]),color=GREEN)))
+        dot_q_text=TextMobject("$Q(v_a^\\prime,v_b^\\prime)$").next_to(dot_q,DOWN).set_color(GREEN).scale(0.7)
+        dot_q_text.add_updater(lambda m:m.become(TextMobject("$Q(v_a^\\prime,v_b^\\prime)$").next_to(dot_q,DOWN).set_color(GREEN).scale(0.7)))
+        self.play(ShowCreation(dot_p))
+        self.play(Write(dot_p_text))
+        self.play(ShowCreation(dot_q))
+        self.play(Write(dot_q_text))
+        self.play(m_b.increment_value,5)
+        self.play(m_b.increment_value,-5)
+        self.wait()
+        self.play(v_a.increment_value,2)
+        self.play(v_a.increment_value,-2)
+        self.wait()
+        #1341
+        #momentum_conservation.add_updater(lambda m:m.become(Line(start=dot_p,end=dot_q,color=BLUE)))
+        fun_y_x=self.get_graph(lambda x:x).set_color(WHITE)
+        self.play(ShowCreation(fun_y_x))
+        self.play(Write(Text("y=x").move_to(UP*0.3+RIGHT)))
+        dot_m=Dot(np.array([(m_a.get_value()*v_a.get_value()+m_b.get_value()*v_b.get_value())/(m_a.get_value()+m_b.get_value()),(m_a.get_value()*v_a.get_value()+m_b.get_value()*v_b.get_value())/(m_a.get_value()+m_b.get_value()),0]),color=BLUE)
+        dot_m.add_updater(lambda m:m.become(Dot(np.array([(m_a.get_value()*v_a.get_value()+m_b.get_value()*v_b.get_value())/(m_a.get_value()+m_b.get_value()),(m_a.get_value()*v_a.get_value()+m_b.get_value()*v_b.get_value())/(m_a.get_value()+m_b.get_value()),0]),color=BLUE)))
+        dot_m_text=TextMobject("$M(v_c,v_c)$").next_to(dot_m,DOWN).set_color(BLUE).scale(0.7)
+        dot_m_text.add_updater(lambda m:m.become(TextMobject("$M(v_c,v_c)$").next_to(dot_m,DOWN).set_color(BLUE).scale(0.7)))
+        self.play(ShowCreation(VGroup(dot_m,dot_m_text)))
+        line_pm=DashedLine(start=dot_p,end=dot_m)
+        line_pm.add_updater(lambda m:m.become(DashedLine(start=dot_p,end=dot_m)))
+        momentum_values=Line(start=dot_m,end=dot_q,color=BLUE)
+        momentum_values.add_updater(lambda m:m.become(Line(start=dot_m,end=dot_q,color=BLUE)))
+        #self.play(ReplacementTransform(momentum_conservation,VGroup(momentum_values,line_pm)))
+        self.wait()
+        #DeltaV
+        line1= Line(start=dot_q,end=np.array([(m_a.get_value()*v_a.get_value()+m_b.get_value()*v_b.get_value())/(m_a.get_value()+m_b.get_value()),(2*m_a.get_value()*v_a.get_value()-(m_a.get_value()-m_b.get_value())*v_b.get_value())/(m_a.get_value()+m_b.get_value()),0]),color=ORANGE)
+        line2= Line(start=np.array([(m_a.get_value()*v_a.get_value()+m_b.get_value()*v_b.get_value())/(m_a.get_value()+m_b.get_value()),(2*m_a.get_value()*v_a.get_value()-(m_a.get_value()-m_b.get_value())*v_b.get_value())/(m_a.get_value()+m_b.get_value()),0]),end=dot_m,color=PINK)
+        line3=Line(start=dot_m,end=np.array([v_a.get_value(),(m_a.get_value()*v_a.get_value()+m_b.get_value()*v_b.get_value())/(m_a.get_value()+m_b.get_value()),0]),color=ORANGE)
+        line4=Line(start=np.array([v_a.get_value(),(m_a.get_value()*v_a.get_value()+m_b.get_value()*v_b.get_value())/(m_a.get_value()+m_b.get_value()),0]),end=dot_p,color=PINK)
+        line1.add_updater(lambda m:m.become(Line(start=dot_q,end=np.array([(m_a.get_value()*v_a.get_value()+m_b.get_value()*v_b.get_value())/(m_a.get_value()+m_b.get_value()),(2*m_a.get_value()*v_a.get_value()-(m_a.get_value()-m_b.get_value())*v_b.get_value())/(m_a.get_value()+m_b.get_value()),0]),color=ORANGE)))
+        line2.add_updater(lambda m:m.become(Line(start=np.array([(m_a.get_value()*v_a.get_value()+m_b.get_value()*v_b.get_value())/(m_a.get_value()+m_b.get_value()),(2*m_a.get_value()*v_a.get_value()-(m_a.get_value()-m_b.get_value())*v_b.get_value())/(m_a.get_value()+m_b.get_value()),0]),end=dot_m,color=PINK)))
+        line3.add_updater(lambda m:m.become(Line(start=dot_m,end=np.array([v_a.get_value(),(m_a.get_value()*v_a.get_value()+m_b.get_value()*v_b.get_value())/(m_a.get_value()+m_b.get_value()),0]),color=ORANGE)))
+        line4.add_updater(lambda m:m.become(Line(start=np.array([v_a.get_value(),(m_a.get_value()*v_a.get_value()+m_b.get_value()*v_b.get_value())/(m_a.get_value()+m_b.get_value()),0]),end=dot_p,color=PINK)))
+        self.play(ShowCreation(VGroup(line1, line2, line3, line4).copy()))
+
+        #tex
+        text_a=TexMobject("v_a^\\prime-v_c&=v_c-v_a\\\\v_a^\\prime&=2v_c-v_a",color=ORANGE).move_to(DOWN+LEFT*4)
+        text_b=TexMobject("v_b^\\prime-v_c&=v_c-v_b\\\\v_b^\\prime&=2v_c-v_b",color=PINK).move_to(DOWN*3+LEFT*4)
+        self.play(ReplacementTransform(VGroup(line1.copy(),line3.copy()),text_a))        
+        self.play(ReplacementTransform(VGroup(line2.copy(),line4.copy()).copy(),text_b))
+        self.wait()
+        self.play(m_b.increment_value,5)
+        self.play(m_b.increment_value,-5)
+        self.wait()
+        self.play(v_a.increment_value,2)
+        self.play(v_a.increment_value,-2)
+        self.wait(5)
+
+class ShiftAndSpatium(Scene):
+    def construct(self):
+        def crm(self):
+            img=ImageMobject("crm",height=6)
+            
+            text=Text("位移\n路程").move_to(LEFT*4)
+            self.play(Write(text))
+            self.play(ShowCreation(img))
+            self.play(ApplyMethod(img.move_to,RIGHT*3))
+            self.wait()
+            self.play(FadeOut(img))
+            self.play(FadeOut(text))
+        #crm(self)
+        text_x=Text("位移：初位置指向末位置的有向线段",color=RED)
+        text_s=Text("路程：通常指物体运动的轨迹的长度",color=BLUE)
+        tex_x=Text("x=",color=RED).move_to(UP*0.5+LEFT*6)
+        tex_s=Text("s=",color=BLUE).move_to(DOWN*0.5+LEFT*6)
+        self.play(Write(text_x))
+        self.play(ApplyMethod(text_x.to_corner, UL))
+        self.play(Write(text_s))
+        self.play(ApplyMethod(text_s.to_corner,DL))
+        dot_o=Dot(point=ORIGIN)
+        self.add(dot_o)
+        val_s=ValueTracker(0)
+        m_x=ValueTracker(0)
+        m_y=ValueTracker(0)
+        dec_x=DecimalNumber().next_to(tex_x,RIGHT).set_color(RED)
+        dec_s=DecimalNumber().next_to(tex_s,RIGHT).set_color(BLUE)
+        dec_x.add_updater(lambda m:m.set_value(np.sqrt(m_x.get_value()**2+m_y.get_value())))
         
-        
-        self.play(m_a.increment_value,5)
-        self.play(m_a.increment_value,-5)
-        m_a.set_value(1)
+        self.play(Write(VGroup(tex_x,dec_x,tex_s,dec_s)))
+        dot_m=Dot(np.array([m_x.get_value(),m_y.get_value(),0]))
+        dot_m.add_updater(lambda m:m.become(Dot(np.array([m_x.get_value(),m_y.get_value(),0]))))
+        self.play(FadeInFromLarge(dot_m))
+        arrow=Arrow(start=dot_o,end=dot_m,color=RED,buff=0)
+        arrow.add_updater(lambda m:m.become(Arrow(start=dot_o,end=dot_m,color=RED,buff=0)))
+
+        path=TracedPath(dot_m.get_center,stroke_color=BLUE,stroke_width=4)
+        self.add(path)
+        self.play(ShowCreation(arrow))
+
+        self.play(m_x.increment_value,1)
+        dec_s.set_value(dec_s.get_value()+1)
+        self.play(m_y.increment_value,1)
+        dec_s.set_value(dec_s.get_value()+1)
+        self.play(m_x.increment_value,-2)
+        dec_s.set_value(dec_s.get_value()+2)
+        self.play(m_y.increment_value,-1)
+        dec_s.set_value(dec_s.get_value()+1)
+        self.play(m_x.increment_value,1)
+        dec_s.set_value(dec_s.get_value()+1)
+        t1=Text("此时位移x=0").move_to(DOWN*0.5)
+        self.play(FadeInFromLarge(t1))
+        self.play(FadeOut(t1))
+        self.play(m_x.increment_value,-6.5)
+        dec_s.set_value(dec_s.get_value()+6.5)
+        self.play(m_y.increment_value,1)
+        dec_s.set_value(dec_s.get_value()+1)
+        self.play(m_x.increment_value,2.5)
+        dec_s.set_value(dec_s.get_value()+2.5)
+        self.play(m_y.increment_value,-2)
+        dec_s.set_value(dec_s.get_value()+2)
+        self.play(m_x.increment_value,-2.5)
+        dec_s.set_value(dec_s.get_value()+2.5)
+        self.play(m_y.increment_value,1)
+        dec_s.set_value(dec_s.get_value()+1)
+
         self.wait()
 
-
-
-
+class Slope(GraphScene):
+    CONFIG={
+        "graph_origin":np.array([0,0,0]),
+        "x_min": -7,
+        "x_max": 7,
+        "x_axis_width": 14,
+        "x_axis_label":"$x$",
+        "y_min": -4,
+        "y_max": 4,
+        "y_axis_height": 8,
+        "y_axis_label":"$y$",
+    }
+    def construct(self):
+        val_k=ValueTracker(1)
+        val_b=ValueTracker(0)
+        dec_k=DecimalNumber(1)
+        dec_b=DecimalNumber(0)
+        dec_k.add_updater(lambda m:m.set_value(val_k.get_value()))
+        dec_b.add_updater(lambda m:m.set_value(val_b.get_value()))
+        self.setup_axes(animate=True)
+        fun= self.get_graph(lambda x :val_k.get_value()*x+val_b.get_value())
+        fun.add_updater(lambda m:m.become(self.get_graph(lambda x :val_k.get_value()*x+val_b.get_value())))
+        self.play(ShowCreation(fun))
+        fun_label=self.get_graph_label(graph=fun,label="y=kx+b")
+        self.play(Write(fun_label))
+        #fun_label.add_updater(lambda m:m.next_to(fun, RIGHT))
+        self.play(val_b.increment_value,1)
+        self.wait()
