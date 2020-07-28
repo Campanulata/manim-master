@@ -1004,16 +1004,182 @@ class Slope(GraphScene):
     def construct(self):
         val_k=ValueTracker(1)
         val_b=ValueTracker(0)
-        dec_k=DecimalNumber(1)
-        dec_b=DecimalNumber(0)
+        fun_text=TextMobject("y=","x+",color=BLUE,stroke_width=2)
+        fun_text[0].to_corner(UL,buff=1)
+        dec_k=DecimalNumber(1).next_to(fun_text[0])
+        fun_text[1].next_to(dec_k)
+        fun_text[1].add_updater(lambda m:m.next_to(dec_k))
+        dec_b=DecimalNumber(0).next_to(fun_text[1])
         dec_k.add_updater(lambda m:m.set_value(val_k.get_value()))
-        dec_b.add_updater(lambda m:m.set_value(val_b.get_value()))
+        dec_b.add_updater(lambda m:m.set_value(val_b.get_value()).next_to(fun_text[1]))
         self.setup_axes(animate=True)
-        fun= self.get_graph(lambda x :val_k.get_value()*x+val_b.get_value())
-        fun.add_updater(lambda m:m.become(self.get_graph(lambda x :val_k.get_value()*x+val_b.get_value())))
+        fun= self.get_graph(lambda x :val_k.get_value()*x+val_b.get_value(),color=BLUE)
+        fun.add_updater(lambda m:m.become(self.get_graph(lambda x :val_k.get_value()*x+val_b.get_value(),color=BLUE)))
         self.play(ShowCreation(fun))
-        fun_label=self.get_graph_label(graph=fun,label="y=kx+b")
-        self.play(Write(fun_label))
-        #fun_label.add_updater(lambda m:m.next_to(fun, RIGHT))
-        self.play(val_b.increment_value,1)
+        fun_label=self.get_graph_label(graph=fun,label="y=kx+b").to_corner(UR,buff=2)
+        self.play(Write(VGroup(fun_text[0],dec_k,fun_text[1],dec_b)))
+        #self.play(Write(fun_label))
+        self.graph=fun
+        self.play(Write(Text("斜率，数学、几何学名词，\n是表示一条直线关于坐标轴倾斜程度的量。\n它通常用直线与坐标轴夹角的正切，\n或两点的纵坐标之差与横坐标之差的比来表示。").scale(0.65).to_corner(DL)))
+        ###
+        mx=ValueTracker(-1)
+        nx=ValueTracker(1)
+        dot_m=Dot(np.array([mx.get_value(),mx.get_value()*val_k.get_value()+val_b.get_value(),0]),color=RED)
+        dot_n=Dot(np.array([nx.get_value(),nx.get_value()*val_k.get_value()+val_b.get_value(),0]),color=YELLOW)
+        line_m=Line(start=dot_m,end=np.array([nx.get_value(),mx.get_value()*val_k.get_value()+val_b.get_value(),0]),color=RED)
+        line_n=Line(start=dot_n,end=np.array([nx.get_value(),mx.get_value()*val_k.get_value()+val_b.get_value(),0]),color=YELLOW)
+        dot_m_text=TextMobject("$(x_1,y_1)$",stroke_width=2).next_to(dot_m,LEFT)
+        dot_n_text=TextMobject("$(x_2,y_2)$",stroke_width=2).next_to(dot_n,RIGHT)
+        line_m_text=TextMobject("$\\Delta x$",color=RED,stroke_width=2).next_to(line_m,DOWN)
+        line_n_text=TextMobject("$\\Delta y$",color=YELLOW,stroke_width=2).next_to(line_n,RIGHT)
+        dot_m.add_updater(lambda m:m.become(Dot(np.array([mx.get_value(),mx.get_value()*val_k.get_value()+val_b.get_value(),0]),color=RED)))
+        dot_n.add_updater(lambda m:m.become(Dot(np.array([nx.get_value(),nx.get_value()*val_k.get_value()+val_b.get_value(),0]),color=YELLOW)))
+        line_m.add_updater(lambda m:m.become(Line(start=dot_m,end=np.array([nx.get_value(),mx.get_value()*val_k.get_value()+val_b.get_value(),0]),color=RED)))
+        line_n.add_updater(lambda m:m.become(Line(start=dot_n,end=np.array([nx.get_value(),mx.get_value()*val_k.get_value()+val_b.get_value(),0]),color=YELLOW)))
+        dot_m_text.add_updater(lambda m:m.become(TextMobject("$(x_1,y_1)$",stroke_width=2).next_to(dot_m,LEFT)))
+        dot_n_text.add_updater(lambda m:m.become(TextMobject("$(x_2,y_2)$",stroke_width=2).next_to(dot_n,RIGHT)))
+        line_m_text.add_updater(lambda m:m.become(TextMobject("$\\Delta x$",stroke_width=2,color=RED).next_to(line_m,DOWN)))
+        line_n_text.add_updater(lambda m:m.become(TextMobject("$\\Delta y$",stroke_width=2,color=YELLOW).next_to(line_n,RIGHT)))
+        theta=Arc(radius=0.3,stroke_width=50,angle=np.degrees(np.arctan(val_k.get_value()))*DEGREES,arc_center=np.array([mx.get_value(),mx.get_value()*val_k.get_value()+val_b.get_value(),0]),color=PURPLE)
+        theta.add_updater(lambda m:m.become(Arc(radius=0.3,stroke_width=50,angle=np.degrees(np.arctan(val_k.get_value()))*DEGREES,arc_center=np.array([mx.get_value(),mx.get_value()*val_k.get_value()+val_b.get_value(),0]),color=PURPLE)))
+        theta_text=TextMobject("$\\theta$",color=PURPLE_E).next_to(theta)
+        theta_text.add_updater(lambda m:m.become(TextMobject("$\\theta$",color=PURPLE,stroke_width=3).next_to(theta,RIGHT+UP*0.01)))
+        self.play(ShowCreation(VGroup(dot_m,dot_n,dot_m_text,dot_n_text)))
+        self.play(ShowCreation(VGroup(line_m,line_n,line_m_text,line_n_text)))
+        self.play(ShowCreation(VGroup(theta,theta_text)))
+        txt=TextMobject("$k=$","$\\tan\\theta$","=","$\\frac{\\Delta y}{\\Delta x}$\\\\","$=\\frac{y_2-y_1}{x_2-x_1}=$",stroke_width=2).move_to(LEFT*4.6+UP*1.5)
+        txt[1].set_color(PURPLE)
+        txt[3].set_color(ORANGE)
+        self.play(Write(txt))
+        self.play(Write(dec_k.copy().next_to(txt[4])))
+        self.play(val_b.increment_value,1,run_time= 3)
+        self.play(val_k.increment_value,1,run_time= 3)
+        self.play(val_k.increment_value,-4,run_time= 3)
         self.wait()
+        self.play(val_k.increment_value,4,run_time= 3)
+        self.wait()
+        a_v_t=TextMobject("$k=a=\\frac{\\Delta v}{\\Delta t}$",stroke_width=2).move_to(DOWN+LEFT*4.7)
+        self.play(Transform(txt.copy(),a_v_t))
+        self.wait(5)
+
+class Secant20186(GraphScene):
+    CONFIG={
+        "graph_origin":np.array([-2,-2,0]),
+        "x_min": 0,
+        "x_max": 5,
+        "x_axis_width": 5,
+        "x_axis_label":"$t$",
+        "y_min": 0,
+        "y_max": 4,
+        "y_axis_height": 4,
+        "y_axis_label":"$v$",
+    }
+    def construct(self):
+        text=Text("斜率，数学、几何学名词，\n通常用直线（或曲线的切线）与（横）坐标轴夹角的正切，\n或两点的纵坐标之差与横坐标之差的比来表示。",stroke_width=2).scale(0.6)
+        self.play(Write(text))
+        self.play(ApplyMethod(text.to_corner,UL))
+        text2=Text("2018年理综全国2卷\n单选题19题图",stroke_width=2)
+        self.play(Write(text2))
+        self.play(ApplyMethod(text2.to_edge,LEFT))
+        img=ImageMobject("6",height=2.5)
+        self.play(FadeIn(img))
+        self.play(ApplyMethod(img.to_corner,DL))
+        self.draw_graph() #画坐标轴和函数图像
+
+        self.draw_secant()
+
+    def draw_graph(self):
+        self.setup_axes(animate = True)
+        graph = self.get_graph(lambda x : (-x-1)*(0.2*x-1),x_max=4) #根据自己的修改函数
+        label = self.get_graph_label(
+            graph, "v=f(t)",
+        )
+        label.next_to(graph)
+        self.play(ShowCreation(graph))
+        self.play(Write(label))
+        self.wait()
+        self.graph = graph
+
+    def draw_secant(self):
+        ss_group = self.get_secant_slope_group(
+            0,self.graph,
+            dx=0.01,
+            dx_label= "dt",
+            df_label= "dv",
+            )   #the result is in the group of {df dx df_lable dx_label secantline}
+        self.play(ShowCreation(ss_group.secant_line))
+        ss_group.add(ss_group.secant_line)
+        deriv=self.get_derivative_graph(self.graph,x_max=4)
+        deriv_func= self.get_graph_label(
+            deriv, label="a=f'(t) ", #更改导函数的结果
+        )
+        deriv_func.next_to(deriv,RIGHT+DOWN)
+        text_a=Text("a=k=").to_edge(DOWN,buff=1)
+        k=DecimalNumber(self.slope_of_tangent(x=0,graph=self.graph,dx=0.01)).next_to(text_a)
+        self.play(Write(text_a))
+        self.play(Write(k))
+        for target_x in range(0,41,1):
+            #k.add_updater(lambda m:m.set_value(self.slope_of_tangent(x=target_x,graph=self.deriv,dx=1)))
+            self.animate_secant_slope_group_change(
+                ss_group,target_x=target_x/10,run_time=0.2
+            ) 
+            k.set_value(self.slope_of_tangent(x=target_x/10,graph=self.graph,dx=0.01))
+        self.wait()
+
+class Secant(GraphScene):
+    CONFIG = {
+        "start_x" : -4,
+        "big_x" : 5,
+        "dx" : 0.01,
+        "x_min" : -7,
+        "x_max" : 7,
+        "y_min" : -5,
+        "y_tick_frequency":5,
+        "y_max" : 50,
+        "x_labeled_nums" : list(range(-6, 0, 2)) + list(range(2, 6, 2)),
+        "y_labeled_nums" : list(range(0,50,10)),
+        "graph_origin":3*DOWN  #设置调整坐标轴的选项
+    }
+    def construct(self):
+        self.draw_graph() #画坐标轴和函数图像
+        self.draw_secant()
+
+    def draw_graph(self):
+        self.setup_axes(animate = True)
+        graph = self.get_graph(lambda x : x**2) #根据自己的修改函数
+        label = self.get_graph_label(
+            graph, "f(x) = x^2",
+        )
+        label.next_to(graph)
+        self.play(ShowCreation(graph))
+        self.play(Write(label))
+        self.wait()
+        self.graph = graph
+
+    def draw_secant(self):
+        ss_group = self.get_secant_slope_group(
+            self.start_x,self.graph,
+            dx=self.dx,
+            dx_label= "dx",
+            df_label= "dy",
+            )   #the result is in the group of {df dx df_lable dx_label secantline}
+
+        secant_line= ss_group.secant_line
+
+        self.play(ShowCreation(ss_group.secant_line)
+            )
+        ss_group.add(ss_group.secant_line)
+        for target_x in self.big_x -self.dx/2,1,2:
+            self.animate_secant_slope_group_change(
+                ss_group,target_dx= self.big_x
+            ) #zheshi secant line. 不是导数变化的图像.中间宽度会变大
+
+        # self.remove(ss_group)
+
+        # deriv=self.get_derivative_graph(self.graph)
+        # deriv_func= self.get_graph_label(
+        #     deriv, label="f'(x) = 2x", #更改导函数的结果
+        # )
+        # deriv_func.next_to(deriv)
+        # self.play(ShowCreation(deriv))
+        # self.play(Write(deriv_func))
