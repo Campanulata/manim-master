@@ -146,7 +146,7 @@ class Time(Scene):
         self.play(Transform(line5.copy(),VGroup(t_pre5,t_line5)))
         self.wait(5)
 
-class LinearMotion(Scene):
+class LinearMotionPart1(Scene):
     def construct(self):
         axes_shift=np.array([-2,-2,0])
         axes=Axes(center_point=axes_shift,x_min=-5,x_max=9,y_min=-2,y_max=6)
@@ -244,6 +244,124 @@ class LinearMotion(Scene):
         t_fun2=TextMobject("$x=\\frac{v_0+v_t}{2}t$").set_color(PURPLE).shift(np.array([-3,4,0])+axes_shift)
         self.play(Transform(VGroup(t_x.copy(),t_v0.copy(),t_t.copy(),t_vt.copy()),t_fun2))
         self.wait(5)
+
+class LinearMotionPart2(Scene):
+    def construct(self):
+        axes_shift=np.array([-2,-2,0])
+        axes=Axes(center_point=axes_shift,x_min=-5,x_max=9,y_min=-2,y_max=6)
+        #
+        text_y=Text("velocity")
+        text_x=Text("time")
+        text_function=Text("v=f(t)函数图像")
+        text_CD=Text("在t正半轴任取一段函数")
+        text_O=TextMobject("O")
+        text_v0_pre=Text("初速度")
+        text_v0=TextMobject("$v_0$")
+        text_vt_pre=Text("末速度")
+        text_vt=TextMobject("$v_t$")
+        text_t_pre=Text("初末时间差")
+        text_t=TextMobject("$t$")
+        text_a_pre=Text("加速度")
+        text_a=TextMobject("$a$")
+        text_trapezoid=Text("直角梯形")
+        text_at=TextMobject("$at$")
+        #
+        point_O=axes_shift
+        point_A=np.array([-5-1/3,-2,0])+axes_shift
+        point_B=np.array([5+1/3,6,0])+axes_shift
+        point_C=np.array([0,2,0])+axes_shift
+        point_D=np.array([4,5,0])+axes_shift
+        point_E=np.array([0,5,0])+axes_shift
+        point_F=np.array([4,0,0])+axes_shift
+        point_G=np.array([4,2,0])+axes_shift
+        #
+        line_function=Line(start=point_A,end=point_B)
+        line_CD=Line(start=point_C,end=point_D).set_color(BLUE)
+        line_DE=DashedLine(start=point_D,end=point_E)
+        line_DF=DashedLine(start=point_D,end=point_F)
+        #
+        trapezoid =VGroup(
+            Line(start=point_O,end=point_F).set_color(YELLOW),
+            Line(start=point_D,end=point_F).set_color(ORANGE),
+            line_CD.copy(),
+            Line(start=point_O,end=point_C).set_color(RED)
+        )
+        #
+        self.play(ShowCreation(axes))
+        self.play(ApplyMethod(text_y.shift,(np.array([1,5.5,0])+axes_shift)))
+        self.play(ApplyMethod(text_x.shift,(np.array([8.5,-0.5,0])+axes_shift)))
+        self.play(FadeInFromLarge(text_O.copy().next_to(point_O,DOWN+ LEFT)))
+        self.play(FadeInFromLarge(text_function))
+        self.wait(0.5)
+        self.play(Transform(text_function,line_function.copy()))
+        #
+        self.play(FadeInFromLarge(text_CD))
+        self.wait(0.5)
+        self.play(Transform(text_CD,line_CD.copy()))
+        self.play(ShowCreation(VGroup(line_DE,line_DF)))
+        #
+        self.play(FadeInFromLarge(text_v0_pre))
+        self.wait(0.5)
+        self.play(Transform(text_v0_pre,text_v0.copy().move_to(LEFT*2.5)))
+        #
+        self.play(FadeInFromLarge(text_vt_pre))
+        self.wait(0.5)
+        self.play(Transform(text_vt_pre,text_vt.copy().move_to(LEFT*2.5+UP*3)))
+        #
+        self.play(FadeInFromLarge(text_t_pre))
+        self.wait(0.5)
+        self.play(Transform(text_t_pre,text_t.copy().move_to(RIGHT*2+DOWN*2.5)))
+        #
+        self.play(FadeInFromLarge(text_a_pre))
+        self.wait(0.5)
+        t_a=text_a.copy().move_to(UP*2)
+        self.play(Transform(text_a_pre,t_a))
+        #
+        self.play(FadeInFromLarge(text_trapezoid))
+        self.wait(0.5)
+        self.play(Transform(text_trapezoid,trapezoid.copy()))
+        #
+        self.wait(0.5)
+        t_v0=text_v0.copy().set_color(RED).move_to(LEFT*2.5+DOWN)
+        t_vt=text_vt.copy().set_color(ORANGE).next_to(line_DF,RIGHT)
+        t_t=text_t.copy().set_color(YELLOW).move_to(DOWN*2.5)
+        self.play(Transform(trapezoid.copy(),VGroup(t_v0,t_vt,t_t)))
+        #
+        self.wait(0.5)
+        t_at=text_at.copy().set_color(PINK).move_to(LEFT*2.5+UP*1.5)
+        line_CE=Line(start=point_C,end=point_E).set_color(PINK)
+        self.play(Transform(VGroup(t_t.copy(),t_a.copy()),VGroup(t_at,line_CE)))
+        #
+        self.wait(0.5)
+        t_x=TextMobject("$x$").set_color(PURPLE).scale(2)
+        square=Polygon(point_O,point_F,point_D,point_C,fill_color=PURPLE,fill_opacity=0.5,buff=0)
+        self.play(ReplacementTransform(square.copy(),t_x))
+        xxx=VGroup(square.copy(),trapezoid.copy()) 
+        self.play(ReplacementTransform(t_x.copy(),xxx))
+        self.wait()
+        tex1=TexMobject("x","=","v_0t","+","\\frac{1}{2}at^2",stroke_width=2).to_corner(UL)
+        tex1[0].set_color(PURPLE)
+        tex1[1].set_color(YELLOW)
+        tex1[2].set_color(RED)
+        tex1[4].set_color(YELLOW)
+        self.play(ReplacementTransform(xxx,tex1[0]))
+        line_CG=DashedLine(start=point_C,end=point_G)
+        self.play(ShowCreation(line_CG))
+        polygon_ocgf=Polygon(point_O,point_C,point_G,point_F,fill_color=RED,fill_opacity=0.5,buff=0)
+        polygon_cgd=Polygon(point_C,point_G,point_D,fill_color=YELLOW,fill_opacity=0.5,buff=0)
+        self.play(ShowCreation(VGroup(polygon_ocgf,polygon_cgd)))
+        self.play(ReplacementTransform(polygon_ocgf,tex1[2]))
+        self.play(Write(tex1[3]))
+        self.play(ReplacementTransform(polygon_cgd,tex1[4]))
+        self.play(FadeInFromLarge(tex1[1]))
+        tex_mid=Text("同理:").next_to(tex1,DOWN)
+        self.play(Write(tex_mid))
+        tex2=TexMobject("x","=","v_t t","-","\\frac{1}{2}at^2",stroke_width=2).next_to(tex_mid,DOWN)
+        tex2[0].set_color(PURPLE)
+        tex2[1].set_color(YELLOW)
+        tex2[2].set_color(ORANGE)
+        tex2[4].set_color(YELLOW)
+        self.play(Write(tex2))
 
 class SumDifferenceProduct(GraphScene):
     CONFIG={
@@ -1183,3 +1301,90 @@ class Secant(GraphScene):
         # deriv_func.next_to(deriv)
         # self.play(ShowCreation(deriv))
         # self.play(Write(deriv_func))
+
+class Plinko(PhysicScene):
+    def construct(self):
+        self.set_gravity(3 * DOWN)
+        
+        stc_body = self.space.static_body
+
+        segs = []
+        bd_x = FRAME_X_RADIUS - 0.5
+        bd_y = FRAME_Y_RADIUS - 0.5
+        left = Line(
+            bd_x * LEFT + bd_y * UP,
+            bd_x * LEFT + bd_y * DOWN)
+        right = Line(
+            bd_x * RIGHT + bd_y * UP,
+            bd_x * RIGHT + bd_y * DOWN)
+        bottom = Line(
+            bd_x * LEFT + bd_y * DOWN,
+            bd_x * RIGHT + bd_y * DOWN
+        )
+        segs.append(left)
+        segs.append(right)
+        segs.append(bottom)
+
+        for i in range(-14, 12):
+            x = i * 0.5 + 0.4
+            seg = Line(x * LEFT + bd_y * DOWN,
+                x * LEFT + (bd_y - 1.5) * DOWN )
+            segs.append(seg)
+        
+        start_x = 0
+
+        for i in range(-13, 13):
+            for j in range(10):
+                pos = i * 0.5 * RIGHT +\
+                    j * 0.5 * UP + 1.5 * DOWN
+                if j % 2 == 0:
+                    pos += 0.25 * RIGHT
+                pos += 0.1 * RIGHT
+                plk_mobj = Circle(radius = 0.15)
+                plk_mobj.set_fill(WHITE, opacity=1)
+                plk_mobj.move_to(pos)
+
+                plk_body = pymunk.Body(body_type=pymunk.Body.STATIC)
+                plk_body.position = pos[0], pos[1]
+
+                plk_shape = pymunk.Circle(
+                    plk_body,
+                    plk_mobj.radius)
+                plk_shape.elasticity = 0
+                plk_shape.friction = 0
+                self.space.add(plk_shape, plk_body)
+                self.add(plk_mobj)
+
+                if i == 0 and j == 5:
+                    start_x = plk_body.position[0]
+
+        for seg in segs:
+            pos_s = seg.points[0]
+            pos_e = seg.points[-1]
+            seg = pymunk.Segment(
+                stc_body,
+                (pos_s[0], pos_s[1]),
+                (pos_e[0], pos_e[1]),
+                0
+            )
+            seg.friction = 0
+            seg.elasticity = 0
+            self.space.add(seg)
+
+        for i in range(80):
+            mass = 10
+            radius = 0.09
+            moment = pymunk.moment_for_circle(mass, 0, radius)
+            ball_body = pymunk.Body(mass, moment)
+            ball_body.position = (2*random() - 1) + start_x, 4
+            ball_shape = pymunk.Circle(ball_body, radius)
+            ball_shape.elasticity = 0
+            ball_mobj = Circle(radius = radius)
+            ball_mobj.set_fill(DARK_BLUE, opacity=1)
+            ball = PhysicMobject(
+                ball_body, ball_shape, ball_mobj)
+            ball.set_add_time(i * 0.1)
+            self.add_physic_obj(ball)
+
+        self.add(*segs)
+        self.simulate(25)
