@@ -1,0 +1,7 @@
+file 'file:/Users/tylor/manim-master/media/videos/MyProject/480p15/partial_movie_files/LinearMotion/00000.mp4'
+file 'file:/Users/tylor/manim-master/media/videos/MyProject/480p15/partial_movie_files/LinearMotion/00001.mp4'
+file 'file:/Users/tylor/manim-master/media/videos/MyProject/480p15/partial_movie_files/LinearMotion/00002.mp4'
+file 'file:/Users/tylor/manim-master/media/videos/MyProject/480p15/partial_movie_files/LinearMotion/00003.mp4'
+file 'file:/Users/tylor/manim-master/media/videos/MyProject/480p15/partial_movie_files/LinearMotion/00004.mp4'
+file 'file:/Users/tylor/manim-master/media/videos/MyProject/480p15/partial_movie_files/LinearMotion/00005.mp4'
+file 'file:/Users/tylor/manim-master/media/videos/MyProject/480p15/partial_movie_files/LinearMotion/00006.mp4'

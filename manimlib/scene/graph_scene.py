@@ -201,7 +201,7 @@ class GraphScene(Scene):
         x_min=None,
         x_max=None,
         **kwargs
-    ):
+    ) -> object:
         """
         This method gets a curve to plot on the graph.
 
@@ -642,29 +642,29 @@ class GraphScene(Scene):
         **line_kwargs
     ):
         """
-        This method returns a Vertical line from the x-axis to 
+        this method returns a vertical line from the x-axis to
         the corresponding point on the graph/curve.
 
-        Parameters
+        parameters
         ----------
-        x Union[int,float]
-            The x-value at which the line should be placed/calculated.
+        x union[int,float]
+            the x-value at which the line should be placed/calculated.
 
-        graph (ParametricFunction)
-            The graph on which the line should extend to.
-        
-        line_class (Line and similar)
-            The type of line that should be used.
-            Defaults to Line
-        
+        graph (parametricfunction)
+            the graph on which the line should extend to.
+
+        line_class (line and similar)
+            the type of line that should be used.
+            defaults to line
+
         **line_kwargs
-            Any valid keyword arguments of the object passed in "line_class"
-            If line_class is Line, any valid keyword arguments of Line are allowed.
-        
-        Return
+            any valid keyword arguments of the object passed in "line_class"
+            if line_class is line, any valid keyword arguments of line are allowed.
+
+        return
         ------
-        An object of type passed in "line_class"
-            Defaults to Line
+        an object of type passed in "line_class"
+            defaults to line
         """
         if "color" not in line_kwargs:
             line_kwargs["color"] = graph.get_color()

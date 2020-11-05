@@ -3,14 +3,14 @@
 <defs>
 <g>
 <symbol overflow="visible" id="glyph0-0">
-<path style="stroke:none;" d="M 1.25 0 L 1.25 -7.5 L 8.75 -7.5 L 8.75 0 Z M 1.871094 -0.621094 L 8.128906 -0.621094 L 8.128906 -6.878906 L 1.871094 -6.878906 Z M 1.871094 -0.621094 "/>
+<path style="stroke:none;" d=""/>
 </symbol>
 <symbol overflow="visible" id="glyph0-1">
 <path style="stroke:none;" d="M 0 0.148438 L 5 0.148438 L 5 0.648438 L 0 0.648438 Z M 0 0.148438 "/>
 </symbol>
 </g>
 </defs>
-<g id="surface47">
+<g id="surface33">
 <g style="fill:rgb(0%,0%,0%);fill-opacity:1;">
   <use xlink:href="#glyph0-1" x="30" y="20"/>
 </g>
